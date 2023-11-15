@@ -8,51 +8,56 @@
 import UIKit
 
 final class ViewController: UIViewController {
-    
     @IBOutlet weak var redTrafficLight: UIView!
     @IBOutlet weak var yellowTrafficLight: UIView!
     @IBOutlet weak var greenTrafficLight: UIView!
-    @IBOutlet weak var trafficLightButton: UIButton!
     
+    @IBOutlet weak var startButton: UIButton!
+    
+    private var curentLight = CurentLight.red
     private let signalIsOn = 1.0
     private let signalIsOff = 0.3
     
-    private var tapCount = 0
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        redTrafficLight.layer.cornerRadius = redTrafficLight.frame.height / 2
-        yellowTrafficLight.layer.cornerRadius = yellowTrafficLight.frame.height / 2
-        greenTrafficLight.layer.cornerRadius = greenTrafficLight.frame.height / 2
+        startButton.layer.cornerRadius = 15
         
         redTrafficLight.alpha = signalIsOff
         yellowTrafficLight.alpha = signalIsOff
         greenTrafficLight.alpha = signalIsOff
-        
-        trafficLightButton.layer.cornerRadius = 15
     }
-    @IBAction func trafficLightButtonDidTapped() {
-        if trafficLightButton.title(for: .normal) == "START" {
-
-            trafficLightButton.setTitle("NEXT", for: .normal)
+    
+    override func viewWillLayoutSubviews() {
+        redTrafficLight.layer.cornerRadius = redTrafficLight.frame.height / 2
+        yellowTrafficLight.layer.cornerRadius = yellowTrafficLight.frame.height / 2
+        greenTrafficLight.layer.cornerRadius = greenTrafficLight.frame.height / 2
+    }
+    
+    @IBAction func startButtonPressed() {
+        if startButton.currentTitle == "START" {
+            startButton.setTitle("NEXT", for: .normal)
             }
-        
-        tapCount += 1
 
-        switch tapCount {
-        case 1,4,7,10:
+        switch curentLight {
+        case .red:
             redTrafficLight.alpha = signalIsOn
             greenTrafficLight.alpha = signalIsOff
-        case 2,5,8,11:
+            curentLight = .yellow
+        case .yellow:
             redTrafficLight.alpha = signalIsOff
             yellowTrafficLight.alpha = signalIsOn
-        case 3,6,9,12:
+            curentLight = .green
+        case .green:
             yellowTrafficLight.alpha = signalIsOff
             greenTrafficLight.alpha = signalIsOn
-        default:
-            break
+            curentLight = .red
         }
-
+    }
+}
+// MARK: - CurentLight
+extension ViewController {
+    private enum CurentLight {
+        case red, yellow, green
     }
 }
 
